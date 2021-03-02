@@ -1,0 +1,22 @@
+server:
+  port: ${PORT}
+  servlet:
+    context-path: /api
+
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASS}
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          time_zone: UTC
+    hibernate:
+      ddl-auto: validate
+
+app:
+  appUrl: ${APP_URL}
