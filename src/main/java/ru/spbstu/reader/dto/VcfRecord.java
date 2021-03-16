@@ -24,7 +24,7 @@ public class VcfRecord {
                 variantContext.getEnd(),
                 variantContext.getID(),
                 variantContext.getReference().getBaseString(),
-                variantContext.getAlternateAllele(0).getBaseString(),
+                variantContext.getAlternateAlleles().isEmpty() ? null : variantContext.getAlternateAllele(0).getBaseString(),
                 variantContext.getAttributes().entrySet().stream()
                         .collect(toMap(Map.Entry::getKey, entry -> entry.getValue().toString())));
     }
