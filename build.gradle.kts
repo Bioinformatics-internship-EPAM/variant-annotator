@@ -20,6 +20,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.flywaydb:flyway-core:7.5.4")
     implementation("org.postgresql:postgresql")
+    implementation("com.vladmihalcea:hibernate-types-52:2.10.3")
 
     testImplementation("com.h2database:h2:1.4.200")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

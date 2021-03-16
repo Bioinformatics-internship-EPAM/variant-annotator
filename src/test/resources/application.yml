@@ -9,6 +9,7 @@ spring:
     username: sa
     password: sa
     driverClassName: org.h2.Driver
+    schema: classpath:init.sql
 
   jpa:
     properties:
