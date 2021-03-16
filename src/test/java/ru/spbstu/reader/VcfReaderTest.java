@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import ru.spbstu.reader.dto.VcfRecord;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
