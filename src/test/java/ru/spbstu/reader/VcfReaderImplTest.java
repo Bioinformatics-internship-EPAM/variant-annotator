@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class VcfReaderTest {
+class VcfReaderImplTest {
 
     @Test
     void testReadVcfFile() throws IOException {
@@ -25,7 +25,7 @@ class VcfReaderTest {
                 new VcfRecord("chr2", 177, ".", "A", "C",
                         Map.of("AC", "1", "AN", "2", "AF", "0.70"))
         );
-        final List<VcfRecord> result = VcfReader.read(getClass().getClassLoader().getResourceAsStream(testFileName));
+        final List<VcfRecord> result = new VcfReaderImpl().read(getClass().getClassLoader().getResourceAsStream(testFileName));
         assertEquals(expectedList.size(), result.size());
         assertTrue(result.containsAll(expectedList));
         assertTrue(expectedList.containsAll(result));
@@ -54,7 +54,7 @@ class VcfReaderTest {
 
         final VcfRecord expectedRecord = new VcfRecord(chrom, pos, id, ref, alt, info);
 
-        final List<VcfRecord> result = VcfReader.read(new ByteArrayInputStream(text.getBytes()));
+        final List<VcfRecord> result = new VcfReaderImpl().read(new ByteArrayInputStream(text.getBytes()));
 
         assertEquals(1, result.size());
         assertEquals(expectedRecord, result.get(0));
