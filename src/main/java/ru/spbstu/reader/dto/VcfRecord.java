@@ -28,10 +28,4 @@ public class VcfRecord {
                 variantContext.getAttributes().entrySet().stream()
                         .collect(toMap(Map.Entry::getKey, entry -> entry.getValue().toString())));
     }
-
-    @Override
-    public String toString() {
-        return String.format("VcfRecord{chrom=%s, pos=%s, id=%s, ref=%s, alt='%s, info=%s}",
-                chrom, pos, id, ref, alt, info);
-    }
 }
