@@ -5,10 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
-import ru.spbstu.dto.VariantSearchRequest;
+import ru.spbstu.model.Annotation;
 import ru.spbstu.model.Variant;
 import ru.spbstu.repository.AnnotationRepository;
 import ru.spbstu.repository.VariantRepository;
+
+import java.util.Map;
 
 @DataJpaTest
 public class VariantRepositoryTest {
@@ -69,13 +71,27 @@ public class VariantRepositoryTest {
         .setChromosome("a")
         .setPosition(4L));
 
-    Assertions.assertThat(variantRepository.findVariant(new VariantSearchRequest("a", 2L, "bbb", "aabb")))
+    Assertions.assertThat(variantRepository.findVariant("a", 2L, "bbb", "aabb"))
         .isEmpty();
-    Assertions.assertThat(variantRepository.findVariant(new VariantSearchRequest("a", 2L, "aaa", "aaab")))
+    Assertions.assertThat(variantRepository.findVariant("a", 2L, "aaa", "aaab"))
         .contains(variant1);
-    Assertions.assertThat(variantRepository.findVariant(new VariantSearchRequest("a", 2L, "aaa", null)))
+    Assertions.assertThat(variantRepository.findVariant("a", 2L, "aaa", null))
         .isEmpty();
-    Assertions.assertThat(variantRepository.findVariant(new VariantSearchRequest("a", 4L, null, null)))
+    Assertions.assertThat(variantRepository.findVariant("a", 4L, null, null))
         .contains(variant4);
+  }
+
+  @Test
+  public void getAnnotationsRelatedToVariant() {
+    variantRepository.save(new Variant().setChromosome("a").setPosition(2L)
+        .addAnnotation(new Annotation().setInfo(Map.of("info", "1")).setDbName("1"))
+        .addAnnotation(new Annotation().setInfo(Map.of("info", "2")).setDbName("2")));
+
+    variantRepository.save(new Variant().setChromosome("a").setPosition(3L)
+        .addAnnotation(new Annotation().setInfo(Map.of("info", "1")).setDbName("3")));
+
+    Iterable<Annotation> annotations = annotationRepository.findAll();
+    Assertions.assertThat(annotations).hasSize(3);
+    annotations.forEach(a -> Assertions.assertThat(a.getVariant()).isNotNull());
   }
 }
