@@ -2,9 +2,18 @@ language: java
 jdk: openjdk15
 install: skip
 
+addons:
+  sonarcloud:
+    organization: "bioinformatics-internship"
+    token:
+      secure: "MIGJAoGBAKY1mJtfyxF51Z8XSE4q/kLixEUegc4UGyP0lTH/URfJ3Yg7HzNwOXNg\nxWYtBWg8foI6H71J25iDGFYFA7ihY1GwDDlfd/RmYzBHD3nrVRdzYvvqKZgAfS9J\nvQnqfMVBRNYlP6osvgf394BvOTCrXh7WEQX6zLD0PO1wKgIEHhBzAgMBAAE="
+
+
 jobs:
   include:
-    - stage: "build"
-      script: ./gradlew bootJar
-    - stage: "unit tests"
-      script: ./gradlew test
+    - stage: "sonarqube"
+      script: ./gradlew sonarqube
+#    - stage: "build"
+#      script: ./gradlew bootJar
+#    - stage: "unit tests"
+#      script: ./gradlew test
