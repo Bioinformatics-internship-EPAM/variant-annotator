@@ -1,0 +1,10 @@
+language: java
+
+jdk: openjdk15
+
+jobs:
+  include:
+    - stage: "build"
+      script: ./gradlew build
+    - stage: "unit tests"
+      script: ./gradle test
