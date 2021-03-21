@@ -1,10 +1,9 @@
 language: java
-
 jdk: openjdk15
 
 jobs:
   include:
     - stage: "build"
-      script: ./gradlew build
+      script: ./gradlew bootJar
     - stage: "unit tests"
-      script: ./gradle test
+      script: ./gradlew test
