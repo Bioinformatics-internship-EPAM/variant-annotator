@@ -41,7 +41,6 @@ sonarqube {
         property("sonar.projectName", "variant-annotator")
         property("sonar.projectKey", "Bioinformatics-internship-EPAM_variant-annotator")
         property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.forceAuthentication", "false")
     }
 }
 
