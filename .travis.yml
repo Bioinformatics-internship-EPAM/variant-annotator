@@ -16,6 +16,7 @@ jobs:
   include:
     - stage: "sonarqube"
       script: ./gradlew sonarqube
+      
 #    - stage: "build"
 #      script: ./gradlew bootJar
 #    - stage: "unit tests"
