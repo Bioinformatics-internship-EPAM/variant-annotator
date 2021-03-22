@@ -41,9 +41,6 @@ sonarqube {
         property("sonar.projectName", "variant-annotator")
         property("sonar.projectKey", "Bioinformatics-internship-EPAM_variant-annotator")
         property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.organization", "bioinformatics-internship")
-        property("sonar.login", "80d48bcbf4017fc63141d3f67ca01c53531439d4")
-        property("sonar.branch.name", "7_connect-travis-ci")
     }
 }
 
