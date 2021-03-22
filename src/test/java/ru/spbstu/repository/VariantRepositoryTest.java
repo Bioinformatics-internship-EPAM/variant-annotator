@@ -1,4 +1,4 @@
-package ru.spbstu.service;
+package ru.spbstu.repository;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -7,8 +7,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import ru.spbstu.model.Annotation;
 import ru.spbstu.model.Variant;
-import ru.spbstu.repository.AnnotationRepository;
-import ru.spbstu.repository.VariantRepository;
 
 import java.util.Map;
 
@@ -93,5 +91,22 @@ public class VariantRepositoryTest {
     Iterable<Annotation> annotations = annotationRepository.findAll();
     Assertions.assertThat(annotations).hasSize(3);
     annotations.forEach(a -> Assertions.assertThat(a.getVariant()).isNotNull());
+  }
+
+  @Test
+  public void checkVariantCode() {
+    Variant variant = variantRepository.save(new Variant()
+        .setChromosome("a").setPosition(2L).setReferenceBase("t"));
+    Assertions.assertThat(variant.getVariantCode()).isEqualTo("a:2:t>");
+  }
+
+  @Test
+  public void violateVariantCodeUniqueConstraint() {
+    variantRepository.save(new Variant()
+        .setChromosome("a").setPosition(2L).setReferenceBase("t"));
+    Assertions.assertThatThrownBy(() -> variantRepository.save(new Variant()
+        .setChromosome("a").setPosition(2L).setReferenceBase("t").setAlternateBase("")))
+        .isInstanceOf(DataIntegrityViolationException.class)
+        .hasMessageContaining("VARIANT_CODE");
   }
 }

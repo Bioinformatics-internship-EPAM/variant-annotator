@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface AnnotationRepository extends CrudRepository<Annotation, Long> {
   List<Annotation> findAllByVariant_Id(Long id);
+
+  List<Annotation> findAllByVariant_VariantCodeIn(List<String> variantCodes);
 }

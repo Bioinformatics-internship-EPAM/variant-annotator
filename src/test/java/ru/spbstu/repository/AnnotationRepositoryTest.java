@@ -1,4 +1,4 @@
-package ru.spbstu.service;
+package ru.spbstu.repository;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -7,8 +7,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import ru.spbstu.model.Annotation;
 import ru.spbstu.model.Variant;
-import ru.spbstu.repository.AnnotationRepository;
-import ru.spbstu.repository.VariantRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -74,5 +72,30 @@ public class AnnotationRepositoryTest {
         .hasSize(2);
     Assertions.assertThat(infos.stream().map(Annotation::getInfo).map(m -> m.get("info")))
         .containsOnly("1", "3");
+  }
+
+  @Test
+  public void checkFindByVariantCodes() {
+    Variant variant = variantRepository.save(new Variant()
+        .setChromosome("a")
+        .setPosition(2L)
+        .setReferenceBase("aaa"));
+    Variant variant2 = variantRepository.save(new Variant()
+        .setChromosome("a")
+        .setPosition(3L)
+        .setReferenceBase("aaa"));
+    Variant variant3 = variantRepository.save(new Variant()
+        .setChromosome("a")
+        .setPosition(4L)
+        .setReferenceBase("bbb"));
+    annotationRepository.saveAll(List.of(
+        new Annotation().setVariant(variant).setInfo(Map.of("info", "1")),
+        new Annotation().setVariant(variant2).setInfo(Map.of("info", "2")),
+        new Annotation().setVariant(variant3).setInfo(Map.of("info", "3"))));
+
+    List<Annotation> annotations = annotationRepository.findAllByVariant_VariantCodeIn(List.of("a:2:aaa>", "a:4:bbb>"));
+    Assertions.assertThat(annotations).hasSize(2);
+    Assertions.assertThat(annotations.stream().map(Annotation::getVariant).map(Variant::getId))
+        .containsOnly(variant.getId(), variant3.getId());
   }
 }
