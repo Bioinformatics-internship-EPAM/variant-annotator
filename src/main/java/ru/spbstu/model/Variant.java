@@ -53,7 +53,7 @@ public class Variant {
     @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Annotation> annotations = new HashSet<>();
 
-    public Variant addAnnotation(Annotation annotation) {
+    public Variant addAnnotation(final Annotation annotation) {
         annotation.setVariant(this);
         annotations.add(annotation);
         return this;

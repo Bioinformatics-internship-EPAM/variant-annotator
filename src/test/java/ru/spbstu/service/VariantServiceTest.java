@@ -107,4 +107,17 @@ class VariantServiceTest {
         variant.getAnnotations().forEach(savedVariant::addAnnotation);
         then(variantRepository).should(times(1)).save(savedVariant);
     }
+
+    @Test
+    void givenVariantExistInDb_whenUpsertVariant_thenVariantIsNotUpdated() {
+        final var variant = Variant.from(VCF_RECORD_1, DB_NAME);
+
+        given(variantRepository.findVariant(variant.getChromosome(), variant.getPosition(),
+                variant.getReferenceBase(), variant.getAlternateBase())).willReturn(Optional.of(variant));
+
+        variantService.upsert(variant);
+
+        then(variantRepository).should(times(1)).save(variant);
+        Assertions.assertThat(variant.getAnnotations().size()).isEqualTo(1);
+    }
 }

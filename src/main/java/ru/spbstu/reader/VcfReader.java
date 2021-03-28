@@ -1,12 +1,14 @@
 package ru.spbstu.reader;
 
 import htsjdk.variant.vcf.VCFIteratorBuilder;
+import org.springframework.stereotype.Component;
 import ru.spbstu.reader.dto.VcfRecord;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.stream.Stream;
 
+@Component
 public class VcfReader implements Reader<VcfRecord> {
 
     public Stream<VcfRecord> read(final InputStream inputStream) throws IOException {
