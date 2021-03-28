@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import ru.spbstu.reader.dto.VcfRecord;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,9 +17,9 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,6 +29,7 @@ import java.util.stream.Stream;
 @Entity
 public class Variant {
     @Id
+    @EqualsAndHashCode.Exclude
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -49,11 +51,11 @@ public class Variant {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Annotation> annotations = new ArrayList<>();
+    private Set<Annotation> annotations = new HashSet<>();
 
     public Variant addAnnotation(Annotation annotation) {
-        annotations.add(annotation);
         annotation.setVariant(this);
+        annotations.add(annotation);
         return this;
     }
 
@@ -64,5 +66,21 @@ public class Variant {
         variantCode = Stream.of(this.chromosome, ":", position.toString(), ":", referenceBase, ">", alternateBase)
                 .filter(Objects::nonNull)
                 .collect(Collectors.joining());
+    }
+
+    public static Variant from(final VcfRecord vcfRecord,
+                               final String dbName) {
+        final var variant = from(vcfRecord);
+        final var annotation = new Annotation()
+                .setDbName(dbName)
+                .setInfo(vcfRecord.getInfo());
+        return variant.addAnnotation(annotation);
+    }
+
+    public static Variant from(final VcfRecord vcfRecord) {
+        return new Variant().setChromosome(vcfRecord.getChrom())
+                .setPosition((long) vcfRecord.getPos())
+                .setReferenceBase(vcfRecord.getRef())
+                .setAlternateBase(vcfRecord.getAlt());
     }
 }

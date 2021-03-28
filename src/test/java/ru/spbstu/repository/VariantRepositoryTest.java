@@ -83,6 +83,7 @@ class VariantRepositoryTest {
     void getAnnotationsRelatedToVariant() {
         variantRepository.save(new Variant().setChromosome("a").setPosition(2L)
                 .addAnnotation(new Annotation().setInfo(Map.of("info", "1")).setDbName("1"))
+                .addAnnotation(new Annotation().setInfo(Map.of("info", "1")).setDbName("1"))
                 .addAnnotation(new Annotation().setInfo(Map.of("info", "2")).setDbName("2")));
 
         variantRepository.save(new Variant().setChromosome("a").setPosition(3L)
