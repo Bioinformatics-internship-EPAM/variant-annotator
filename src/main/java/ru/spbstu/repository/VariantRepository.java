@@ -12,16 +12,22 @@ import java.util.Optional;
 
 @Repository
 public interface VariantRepository extends CrudRepository<Variant, Long>, JpaSpecificationExecutor<Variant> {
-  default Optional<Variant> findVariant(String chromosome, Long position, String referenceBase, String alternateBase) {
-    return findOne((variant, cq, cb) ->
-        cb.and(
-            cb.equal(variant.get("chromosome"), chromosome),
-            cb.equal(variant.get("position"), position),
-            getPredicateForNullableValue(referenceBase, "referenceBase", variant, cb),
-            getPredicateForNullableValue(alternateBase, "alternateBase", variant, cb)));
-  }
+    default Optional<Variant> findVariant(String chromosome,
+                                          Long position,
+                                          String referenceBase,
+                                          String alternateBase) {
+        return findOne((variant, cq, cb) ->
+                cb.and(
+                        cb.equal(variant.get("chromosome"), chromosome),
+                        cb.equal(variant.get("position"), position),
+                        getPredicateForNullableValue(referenceBase, "referenceBase", variant, cb),
+                        getPredicateForNullableValue(alternateBase, "alternateBase", variant, cb)));
+    }
 
-  private Predicate getPredicateForNullableValue(String value, String fieldName, Root<Variant> variant, CriteriaBuilder cb) {
-    return value == null ? cb.isNull(variant.get(fieldName)) : cb.equal(variant.get(fieldName), value);
-  }
+    private Predicate getPredicateForNullableValue(String value,
+                                                   String fieldName,
+                                                   Root<Variant> variant,
+                                                   CriteriaBuilder cb) {
+        return value == null ? cb.isNull(variant.get(fieldName)) : cb.equal(variant.get(fieldName), value);
+    }
 }

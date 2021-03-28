@@ -27,37 +27,42 @@ import java.util.stream.Stream;
 @Table(name = "variants", uniqueConstraints = @UniqueConstraint(columnNames = {"chrom", "pos", "ref", "alt"}))
 @Entity
 public class Variant {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-  @Column(name = "chrom", nullable = false)
-  private String chromosome;
-  @Column(name = "pos", nullable = false)
-  private Long position;
-  @Column(name = "ref")
-  private String referenceBase;
-  @Column(name = "alt")
-  private String alternateBase;
-  @Column(name = "variant_code", nullable = false)
-  private String variantCode;
-  @ToString.Exclude
-  @EqualsAndHashCode.Exclude
-  @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL,
-      orphanRemoval = true)
-  private List<Annotation> annotations = new ArrayList<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  public Variant addAnnotation(Annotation annotation) {
-    this.annotations.add(annotation);
-    annotation.setVariant(this);
-    return this;
-  }
+    @Column(name = "chrom", nullable = false)
+    private String chromosome;
 
-  // TODO: remove this after migrating to PostgreSQL
-  @PreUpdate
-  @PrePersist
-  private void updateVariantCode() {
-    variantCode = Stream.of(this.chromosome, ":", position.toString(), ":", referenceBase, ">", alternateBase)
-        .filter(Objects::nonNull)
-        .collect(Collectors.joining());
-  }
+    @Column(name = "pos", nullable = false)
+    private Long position;
+
+    @Column(name = "ref")
+    private String referenceBase;
+
+    @Column(name = "alt")
+    private String alternateBase;
+
+    @Column(name = "variant_code", nullable = false)
+    private String variantCode;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Annotation> annotations = new ArrayList<>();
+
+    public Variant addAnnotation(Annotation annotation) {
+        annotations.add(annotation);
+        annotation.setVariant(this);
+        return this;
+    }
+
+    // TODO: remove this after migrating to PostgreSQL
+    @PreUpdate
+    @PrePersist
+    private void updateVariantCode() {
+        variantCode = Stream.of(this.chromosome, ":", position.toString(), ":", referenceBase, ">", alternateBase)
+                .filter(Objects::nonNull)
+                .collect(Collectors.joining());
+    }
 }
