@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "2.4.3"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    id("org.sonarqube") version "3.1.1"
 }
 
 group = "ru.spbstu"
@@ -33,6 +34,14 @@ dependencies {
     annotationProcessor(lombok)
     testCompileOnly(lombok)
     testAnnotationProcessor(lombok)
+}
+
+sonarqube {
+    properties {
+        property("sonar.projectName", "variant-annotator")
+        property("sonar.projectKey", "Bioinformatics-internship-EPAM_variant-annotator")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
 }
 
 tasks.withType<JavaCompile> {
