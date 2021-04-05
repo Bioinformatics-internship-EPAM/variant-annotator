@@ -1,19 +1,26 @@
 package ru.spbstu.service;
 
-import org.assertj.core.api.Assertions;
+import com.google.common.collect.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ru.spbstu.model.Variant;
+import ru.spbstu.reader.Reader;
 import ru.spbstu.reader.dto.VcfRecord;
 import ru.spbstu.repository.VariantRepository;
+import ru.spbstu.service.impl.VariantServiceImpl;
+import utils.TestUtils;
 
+import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -23,12 +30,18 @@ class VariantServiceTest {
     private static final String DB_NAME = "db";
     private static final VcfRecord VCF_RECORD_1 = new VcfRecord("chr1", 109, ".", "A", "T", Map.of("AC", "1", "AN", "2", "AF", "0.50"));
     private static final VcfRecord VCF_RECORD_2 = new VcfRecord("chr2", 147, ".", "C", "A", Map.of("AC", "1", "AN", "2", "AF", "0.55"));
+    private static final Variant VARIANT_1 = Variant.newInstance(VCF_RECORD_1, DB_NAME);
+    private static final Variant VARIANT_2 = Variant.newInstance(VCF_RECORD_2, DB_NAME);
+    private static final int BATCH_SIZE = 5;
 
     @Mock
     VariantRepository variantRepository;
 
+    @Mock
+    Reader<VcfRecord> vcfReader;
+
     @InjectMocks
-    VariantService variantService;
+    VariantServiceImpl variantService;
 
     @BeforeEach
     void init() {
@@ -36,88 +49,35 @@ class VariantServiceTest {
     }
 
     @Test
-    void givenNewVcfRecords_whenUpsertVcfRecords_thenVariantsAreSaved() {
-        final var variant1 = Variant.from(VCF_RECORD_1, DB_NAME);
-        final var variant2 = Variant.from(VCF_RECORD_2, DB_NAME);
+    void givenInputStream_whenSaveVcfRecords_thenVariantsAreSaved() throws Exception {
+        final var variants = List.of(VARIANT_1, VARIANT_2);
 
-        given(variantRepository.findVariant(variant1.getChromosome(), variant1.getPosition(),
-                variant1.getReferenceBase(), variant1.getAlternateBase())).willReturn(Optional.empty());
-        given(variantRepository.findVariant(variant2.getChromosome(), variant2.getPosition(),
-                variant2.getReferenceBase(), variant2.getAlternateBase())).willReturn(Optional.empty());
+        given(vcfReader.read(any())).willReturn(Stream.of(VCF_RECORD_1, VCF_RECORD_2));
+        given(variantRepository.saveAll(variants)).willReturn(variants);
 
-        variantService.upsert(Stream.of(VCF_RECORD_1, VCF_RECORD_2), DB_NAME);
+        variantService.save(InputStream.nullInputStream(), DB_NAME);
 
-        then(variantRepository).should(times(1)).save(variant1);
-        then(variantRepository).should(times(1)).save(variant2);
+        then(vcfReader).should(times(1)).read(any());
+        then(variantRepository).should(times(1)).saveAll(variants);
     }
 
     @Test
-    void givenVariantExistInDb_whenUpsertVcfRecords_thenVariantIsUpdated() {
-        final var vcfRecord = new VcfRecord(VCF_RECORD_1.getChrom(), VCF_RECORD_1.getPos(), VCF_RECORD_1.getId(),
-                VCF_RECORD_1.getRef(), VCF_RECORD_1.getAlt(), Map.of("AC", "1", "AN", "2", "AF", "0.55"));
-        final var variant = Variant.from(vcfRecord, DB_NAME);
-        final var savedVariant = Variant.from(VCF_RECORD_1, DB_NAME);
+    void givenInputStream_whenSaveVcfRecordsWithBatch_thenVariantsAreSavedWithBatch() throws Exception {
+        final var vcfRecords = Stream.generate(TestUtils::createRandomVcfRecord)
+                .limit(ThreadLocalRandom.current().nextInt(100))
+                .collect(Collectors.toList());
+        final var variants = vcfRecords.stream()
+                .map(Variant::from)
+                .collect(Collectors.toList());
+        final var variantsBatches = Lists.partition(variants, BATCH_SIZE);
 
-        given(variantRepository.findVariant(variant.getChromosome(), variant.getPosition(),
-                variant.getReferenceBase(), variant.getAlternateBase())).willReturn(Optional.of(savedVariant));
+        given(vcfReader.read(any())).willReturn(vcfRecords.stream());
+        variantsBatches.forEach(batch -> given(variantRepository.saveAll(batch)).willReturn(batch));
 
-        variantService.upsert(Stream.of(vcfRecord), DB_NAME);
+        variantService.saveWithBatch(InputStream.nullInputStream(), DB_NAME, BATCH_SIZE);
 
-        variant.getAnnotations().forEach(savedVariant::addAnnotation);
-        then(variantRepository).should(times(1)).save(savedVariant);
-    }
-
-    @Test
-    void givenVariantExistInDb_whenUpsertVcfRecords_thenVariantIsNotUpdated() {
-        final var variant = Variant.from(VCF_RECORD_1, DB_NAME);
-
-        given(variantRepository.findVariant(variant.getChromosome(), variant.getPosition(),
-                variant.getReferenceBase(), variant.getAlternateBase())).willReturn(Optional.of(variant));
-
-        variantService.upsert(Stream.of(VCF_RECORD_1), DB_NAME);
-
-        then(variantRepository).should(times(1)).save(variant);
-        Assertions.assertThat(variant.getAnnotations().size()).isEqualTo(1);
-    }
-
-    @Test
-    void givenNewVcfRecord_whenUpsertVariant_thenVariantIsSaved() {
-        final var variant = Variant.from(VCF_RECORD_1, DB_NAME);
-
-        given(variantRepository.findVariant(variant.getChromosome(), variant.getPosition(),
-                variant.getReferenceBase(), variant.getAlternateBase())).willReturn(Optional.empty());
-
-        variantService.upsert(variant);
-
-        then(variantRepository).should(times(1)).save(variant);
-    }
-
-    @Test
-    void givenVariantExistInDb_whenUpsertVariant_thenVariantIsUpdated() {
-        final var vcfRecord = new VcfRecord(VCF_RECORD_1.getChrom(), VCF_RECORD_1.getPos(), VCF_RECORD_1.getId(),
-                VCF_RECORD_1.getRef(), VCF_RECORD_1.getAlt(), Map.of("AC", "1", "AN", "2", "AF", "0.55"));
-        final var variant = Variant.from(vcfRecord, DB_NAME);
-        final var savedVariant = Variant.from(VCF_RECORD_1, DB_NAME);
-
-        given(variantRepository.findVariant(variant.getChromosome(), variant.getPosition(),
-                variant.getReferenceBase(), variant.getAlternateBase())).willReturn(Optional.of(savedVariant));
-
-        variantService.upsert(variant);
-
-        variant.getAnnotations().forEach(savedVariant::addAnnotation);
-        then(variantRepository).should(times(1)).save(savedVariant);
-    }
-
-    @Test
-    void givenVariantExistInDb_whenUpsertVariant_thenVariantIsNotUpdated() {
-        final var variant = Variant.from(VCF_RECORD_1, DB_NAME);
-
-        given(variantRepository.findVariant(variant.getChromosome(), variant.getPosition(),
-                variant.getReferenceBase(), variant.getAlternateBase())).willReturn(Optional.of(variant));
-
-        variantService.upsert(variant);
-
-        then(variantRepository).should(times(1)).save(variant);
-        Assertions.assertThat(variant.getAnnotations().size()).isEqualTo(1);
+        then(vcfReader).should(times(1)).read(any());
+        then(variantRepository).should(times(variantsBatches.size())).saveAll(any());
+        variantsBatches.forEach(batch -> then(variantRepository).should(times(1)).saveAll(batch));
     }
 }

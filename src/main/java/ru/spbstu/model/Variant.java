@@ -68,8 +68,8 @@ public class Variant {
                 .collect(Collectors.joining());
     }
 
-    public static Variant from(final VcfRecord vcfRecord,
-                               final String dbName) {
+    public static Variant newInstance(final VcfRecord vcfRecord,
+                                      final String dbName) {
         final var variant = from(vcfRecord);
         final var annotation = new Annotation()
                 .setDbName(dbName)
