@@ -23,6 +23,8 @@ dependencies {
     implementation("org.postgresql:postgresql")
     implementation(group = "com.github.samtools", name = "htsjdk", version = "2.24.0")
     implementation("com.vladmihalcea:hibernate-types-52:2.10.3")
+    implementation("io.springfox:springfox-boot-starter:3.0.0")
+    implementation("io.springfox:springfox-swagger-ui:2.9.2")
 
     testImplementation("com.h2database:h2:1.4.200")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
