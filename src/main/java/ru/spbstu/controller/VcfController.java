@@ -1,6 +1,7 @@
 package ru.spbstu.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,7 +24,7 @@ public class VcfController {
             variantService.save(file.getInputStream(), dbName);
             return ResponseEntity.ok().build();
         } catch (IOException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("Incorrect vcf file");
         }
     }
 }

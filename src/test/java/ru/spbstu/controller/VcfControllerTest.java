@@ -52,6 +52,6 @@ class VcfControllerTest {
         given(variantService.save(any(), eq(DB_NAME))).willThrow(IOException.class);
 
         mockMvc.perform(multipart(PARSE_VCF_FILE_URL).file(VCF_STUB_FILE).param("db_name", DB_NAME))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnprocessableEntity());
     }
 }
