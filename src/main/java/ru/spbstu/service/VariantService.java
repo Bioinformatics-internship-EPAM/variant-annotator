@@ -8,5 +8,5 @@ import java.io.InputStream;
 public interface VariantService {
 
     Iterable<Variant> save(InputStream inputStream, String dbName) throws IOException;
-    void saveWithBatch(InputStream inputStream, String dbName, int batchSize) throws IOException;
+    void saveWithBatch(InputStream inputStream, String dbName) throws IOException;
 }

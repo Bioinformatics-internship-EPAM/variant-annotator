@@ -1,6 +1,7 @@
 package ru.spbstu.service;
 
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -44,8 +45,9 @@ class VariantServiceTest {
     VariantServiceImpl variantService;
 
     @BeforeEach
-    void init() {
+    void init() throws IllegalAccessException {
         MockitoAnnotations.openMocks(this);
+        FieldUtils.writeField(variantService, "saveBatchSize", BATCH_SIZE, true);
     }
 
     @Test
@@ -74,7 +76,7 @@ class VariantServiceTest {
         given(vcfReader.read(any())).willReturn(vcfRecords.stream());
         variantsBatches.forEach(batch -> given(variantRepository.saveAll(batch)).willReturn(batch));
 
-        variantService.saveWithBatch(InputStream.nullInputStream(), DB_NAME, BATCH_SIZE);
+        variantService.saveWithBatch(InputStream.nullInputStream(), DB_NAME);
 
         then(vcfReader).should(times(1)).read(any());
         then(variantRepository).should(times(variantsBatches.size())).saveAll(any());
