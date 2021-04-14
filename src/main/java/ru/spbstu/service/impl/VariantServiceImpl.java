@@ -4,6 +4,7 @@ import com.google.common.collect.Iterators;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.spbstu.model.Variant;
 import ru.spbstu.reader.Reader;
 import ru.spbstu.reader.dto.VcfRecord;
@@ -25,6 +26,7 @@ public class VariantServiceImpl implements VariantService {
     private int saveBatchSize;
 
     @Override
+    @Transactional
     public Iterable<Variant> save(final InputStream inputStream,
                                   final String dbName) throws IOException {
         final var variants = vcfReader.read(inputStream)
@@ -34,6 +36,7 @@ public class VariantServiceImpl implements VariantService {
     }
 
     @Override
+    @Transactional
     public void saveWithBatch(final InputStream inputStream,
                               final String dbName) throws IOException {
         final var variants = vcfReader.read(inputStream)
