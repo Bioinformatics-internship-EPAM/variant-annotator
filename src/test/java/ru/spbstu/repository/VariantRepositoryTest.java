@@ -108,10 +108,9 @@ public class VariantRepositoryTest {
   @Test
   public void violateVariantCodeUniqueConstraint() {
     variantRepository.save(new Variant()
-        .setChromosome("a").setPosition(2L).setReferenceBase("t"));
+        .setChromosome("a").setPosition(2L).setReferenceBase("t").setAlternateBase(""));
     Assertions.assertThatThrownBy(() -> variantRepository.save(new Variant()
         .setChromosome("a").setPosition(2L).setReferenceBase("t").setAlternateBase("")))
-        .isInstanceOf(DataIntegrityViolationException.class)
-        .hasMessageContaining("VARIANT_CODE");
+        .isInstanceOf(DataIntegrityViolationException.class);
   }
 }

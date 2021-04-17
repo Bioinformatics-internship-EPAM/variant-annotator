@@ -47,18 +47,26 @@ public class AnnotationRepositoryTest {
   }
 
   @Test
-  public void violateConstraints() {
-    Assertions.assertThatThrownBy(() -> annotationRepository.save(new Annotation().setInfo(Map.of("info", "1"))))
-        .isInstanceOf(DataIntegrityViolationException.class);
-    Assertions.assertThatThrownBy(() -> annotationRepository.save(new Annotation().setVariant(new Variant().setId(1L)).setInfo(Map.of("info", "2"))))
-        .isInstanceOf(DataIntegrityViolationException.class);
-    Variant variant = variantRepository.save(new Variant()
-        .setChromosome("a")
-        .setPosition(2L)
-        .setReferenceBase("aaa"));
+  public void violateConstraintsJsonb(){
+      Variant variant = variantRepository.save(new Variant()
+              .setChromosome("a")
+              .setPosition(2L)
+              .setReferenceBase("aaa"));
+      Assertions.assertThatThrownBy(() -> annotationRepository.save(new Annotation().setVariant(variant)))
+              .isInstanceOf(DataIntegrityViolationException.class);
+  }
 
-    Assertions.assertThatThrownBy(() -> annotationRepository.save(new Annotation().setVariant(variant)))
-        .isInstanceOf(DataIntegrityViolationException.class);
+  @Test
+  public void violateConstraintsVariantIdNotExists() {
+    Assertions.assertThatThrownBy(() -> annotationRepository.save(new Annotation().setVariant(new Variant()
+            .setId(1L)).setInfo(Map.of("info", "2"))))
+            .isInstanceOf(DataIntegrityViolationException.class);
+  }
+
+  @Test
+  public void  violateConstraintsVariantIdNotSet(){
+      Assertions.assertThatThrownBy(() -> annotationRepository.save(new Annotation().setInfo(Map.of("info", "1"))))
+              .isInstanceOf(DataIntegrityViolationException.class);
   }
 
   @Test
