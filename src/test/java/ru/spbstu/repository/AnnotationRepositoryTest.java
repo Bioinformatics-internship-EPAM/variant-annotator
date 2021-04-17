@@ -1,10 +1,17 @@
 package ru.spbstu.repository;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.spbstu.model.Annotation;
 import ru.spbstu.model.Variant;
 
@@ -12,7 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@RunWith(SpringRunner.class)
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class AnnotationRepositoryTest {
   @Autowired
   private VariantRepository variantRepository;
