@@ -5,8 +5,7 @@ server:
 
 spring:
   datasource:
-    schema: classpath:V1__init.sql
-    url: jdbc:tc:postgresql:9.6.8:///test-db
+    url: jdbc:tc:postgresql:13.2-alpine:///test-db
 
   jpa:
     properties:
