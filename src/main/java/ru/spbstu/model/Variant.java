@@ -1,5 +1,6 @@
 package ru.spbstu.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -31,12 +32,16 @@ public class Variant {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   @Column(name = "chrom", nullable = false)
+  @JsonProperty("chrom")
   private String chromosome;
   @Column(name = "pos", nullable = false)
+  @JsonProperty("pos")
   private Long position;
   @Column(name = "ref")
+  @JsonProperty("ref")
   private String referenceBase;
   @Column(name = "alt")
+  @JsonProperty("alt")
   private String alternateBase;
   @Column(name = "variant_code", nullable = false)
   private String variantCode;
@@ -44,6 +49,7 @@ public class Variant {
   @EqualsAndHashCode.Exclude
   @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL,
       orphanRemoval = true)
+  @JsonProperty("annotations")
   private List<Annotation> annotations = new ArrayList<>();
 
   public Variant addAnnotation(Annotation annotation) {
