@@ -24,10 +24,12 @@ dependencies {
     implementation(group = "com.github.samtools", name = "htsjdk", version = "2.24.0")
     implementation("com.vladmihalcea:hibernate-types-52:2.10.3")
 
-    testImplementation("com.h2database:h2:1.4.200")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
+    testImplementation("org.testcontainers:testcontainers:1.15.2")
+    testImplementation("org.testcontainers:postgresql:1.15.2")
+    testImplementation("org.testcontainers:junit-jupiter:1.15.2")
 
     val lombok = "org.projectlombok:lombok:1.18.18"
     compileOnly(lombok)
