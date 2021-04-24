@@ -2,9 +2,12 @@ package ru.spbstu.repository;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.junit4.SpringRunner;
 import ru.spbstu.model.Annotation;
 import ru.spbstu.model.Variant;
 
@@ -12,8 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@RunWith(SpringRunner.class)
 @DataJpaTest
-class AnnotationRepositoryTest {
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+public class AnnotationRepositoryTest {
     @Autowired
     private VariantRepository variantRepository;
     @Autowired
@@ -38,17 +43,25 @@ class AnnotationRepositoryTest {
     }
 
     @Test
-    void violateConstraints() {
-        Assertions.assertThatThrownBy(() -> annotationRepository.save(new Annotation().setInfo(Map.of("info", "1"))))
-                .isInstanceOf(DataIntegrityViolationException.class);
-        Assertions.assertThatThrownBy(() -> annotationRepository.save(new Annotation().setVariant(new Variant().setId(1L)).setInfo(Map.of("info", "2"))))
-                .isInstanceOf(DataIntegrityViolationException.class);
+    void violateConstraintsJsonb() {
         Variant variant = variantRepository.save(new Variant()
                 .setChromosome("a")
                 .setPosition(2L)
                 .setReferenceBase("aaa"));
-
         Assertions.assertThatThrownBy(() -> annotationRepository.save(new Annotation().setVariant(variant)))
+                .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    public void violateConstraintsVariantIdNotExists() {
+        Assertions.assertThatThrownBy(() -> annotationRepository.save(new Annotation().setVariant(new Variant()
+                .setId(1L)).setInfo(Map.of("info", "2"))))
+                .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void violateConstraintsVariantIdNotSet() {
+        Assertions.assertThatThrownBy(() -> annotationRepository.save(new Annotation().setInfo(Map.of("info", "1"))))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 

@@ -2,16 +2,21 @@ package ru.spbstu.repository;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.junit4.SpringRunner;
 import ru.spbstu.model.Annotation;
 import ru.spbstu.model.Variant;
 
 import java.util.Map;
 
+@RunWith(SpringRunner.class)
 @DataJpaTest
-class VariantRepositoryTest {
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+public class VariantRepositoryTest {
     @Autowired
     private VariantRepository variantRepository;
     @Autowired
@@ -104,10 +109,9 @@ class VariantRepositoryTest {
     @Test
     void violateVariantCodeUniqueConstraint() {
         variantRepository.save(new Variant()
-                .setChromosome("a").setPosition(2L).setReferenceBase("t"));
+                .setChromosome("a").setPosition(2L).setReferenceBase("t").setAlternateBase(""));
         Assertions.assertThatThrownBy(() -> variantRepository.save(new Variant()
                 .setChromosome("a").setPosition(2L).setReferenceBase("t").setAlternateBase("")))
-                .isInstanceOf(DataIntegrityViolationException.class)
-                .hasMessageContaining("VARIANT_CODE");
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 }
