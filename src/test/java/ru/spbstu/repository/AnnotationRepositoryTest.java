@@ -25,7 +25,7 @@ public class AnnotationRepositoryTest {
     private AnnotationRepository annotationRepository;
 
     @Test
-    public void simpleInsert() {
+    void simpleInsert() {
         Variant variant = variantRepository.save(new Variant()
                 .setChromosome("a")
                 .setPosition(2L)
@@ -43,7 +43,7 @@ public class AnnotationRepositoryTest {
     }
 
     @Test
-    public void violateConstraintsJsonb() {
+    void violateConstraintsJsonb() {
         Variant variant = variantRepository.save(new Variant()
                 .setChromosome("a")
                 .setPosition(2L)
@@ -60,13 +60,13 @@ public class AnnotationRepositoryTest {
     }
 
     @Test
-    public void violateConstraintsVariantIdNotSet() {
+    void violateConstraintsVariantIdNotSet() {
         Assertions.assertThatThrownBy(() -> annotationRepository.save(new Annotation().setInfo(Map.of("info", "1"))))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
-    public void findAllByVariantId() {
+    void findAllByVariantId() {
         Variant variant = variantRepository.save(new Variant()
                 .setChromosome("a")
                 .setPosition(2L)
@@ -88,7 +88,7 @@ public class AnnotationRepositoryTest {
     }
 
     @Test
-    public void checkFindByVariantCodes() {
+    void checkFindByVariantCodes() {
         Variant variant = variantRepository.save(new Variant()
                 .setChromosome("a")
                 .setPosition(2L)

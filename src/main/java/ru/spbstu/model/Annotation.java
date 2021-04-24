@@ -2,6 +2,7 @@ package ru.spbstu.model;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -22,15 +23,19 @@ import java.util.Map;
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Entity
 public class Annotation {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-  @ManyToOne
-  @JoinColumn(name = "variant_id", nullable = false)
-  private Variant variant;
-  @Type(type = "jsonb")
-  @Column(nullable = false, columnDefinition = "jsonb")
-  private Map<String, String> info;
-  @Column(name = "db_name")
-  private String dbName;
+    @Id
+    @EqualsAndHashCode.Exclude
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "variant_id", nullable = false)
+    private Variant variant;
+
+    @Type(type = "jsonb")
+    @Column(nullable = false, columnDefinition = "jsonb")
+    private Map<String, String> info;
+
+    @Column(name = "db_name")
+    private String dbName;
 }

@@ -23,7 +23,7 @@ public class VariantRepositoryTest {
     private AnnotationRepository annotationRepository;
 
     @Test
-    public void simpleInsert() {
+    void simpleInsert() {
         Variant variant = variantRepository.save(new Variant()
                 .setChromosome("a")
                 .setPosition(2L)
@@ -35,7 +35,7 @@ public class VariantRepositoryTest {
     }
 
     @Test
-    public void violateUniqueConstraint() {
+    void violateUniqueConstraint() {
         variantRepository.save(new Variant()
                 .setChromosome("a")
                 .setPosition(2L)
@@ -55,7 +55,7 @@ public class VariantRepositoryTest {
     }
 
     @Test
-    public void findByCompositeKey() {
+    void findByCompositeKey() {
         Variant variant1 = variantRepository.save(new Variant()
                 .setChromosome("a")
                 .setPosition(2L)
@@ -85,8 +85,9 @@ public class VariantRepositoryTest {
     }
 
     @Test
-    public void getAnnotationsRelatedToVariant() {
+    void getAnnotationsRelatedToVariant() {
         variantRepository.save(new Variant().setChromosome("a").setPosition(2L)
+                .addAnnotation(new Annotation().setInfo(Map.of("info", "1")).setDbName("1"))
                 .addAnnotation(new Annotation().setInfo(Map.of("info", "1")).setDbName("1"))
                 .addAnnotation(new Annotation().setInfo(Map.of("info", "2")).setDbName("2")));
 
@@ -99,14 +100,14 @@ public class VariantRepositoryTest {
     }
 
     @Test
-    public void checkVariantCode() {
+    void checkVariantCode() {
         Variant variant = variantRepository.save(new Variant()
                 .setChromosome("a").setPosition(2L).setReferenceBase("t"));
         Assertions.assertThat(variant.getVariantCode()).isEqualTo("a:2:t>");
     }
 
     @Test
-    public void violateVariantCodeUniqueConstraint() {
+    void violateVariantCodeUniqueConstraint() {
         variantRepository.save(new Variant()
                 .setChromosome("a").setPosition(2L).setReferenceBase("t").setAlternateBase(""));
         Assertions.assertThatThrownBy(() -> variantRepository.save(new Variant()
