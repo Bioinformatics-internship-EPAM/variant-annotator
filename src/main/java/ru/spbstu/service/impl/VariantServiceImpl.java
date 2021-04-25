@@ -13,6 +13,7 @@ import ru.spbstu.service.VariantService;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,5 +43,10 @@ public class VariantServiceImpl implements VariantService {
         final var variants = vcfReader.read(inputStream)
                 .map(vcfRecord -> Variant.newInstance(vcfRecord, dbName));
         Iterators.partition(variants.iterator(), saveBatchSize).forEachRemaining(variantRepository::saveAll);
+    }
+
+    @Override
+    public Optional<Variant> find(String chromosome, Long position, String referenceBase, String alternateBase) {
+        return variantRepository.findVariant(chromosome, position, referenceBase, alternateBase);
     }
 }
