@@ -36,25 +36,27 @@ public class Variant {
 
     @Column(name = "chrom", nullable = false)
     @JsonProperty("chrom")
-  private String chromosome;
-  @Column(name = "pos", nullable = false)
-  @JsonProperty("pos")
+    private String chromosome;
+
+    @Column(name = "pos", nullable = false)
+    @JsonProperty("pos")
     private Long position;
 
     @Column(name = "ref")
-  @JsonProperty("ref")
+    @JsonProperty("ref")
     private String referenceBase;
 
     @Column(name = "alt")
-  @JsonProperty("alt")
-  private String alternateBase;
-  @Column(name = "variant_code", nullable = false)
-  private String variantCode;
-  @ToString.Exclude
-  @EqualsAndHashCode.Exclude
-  @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL,
-      orphanRemoval = true)
-  @JsonProperty("annotations")
+    @JsonProperty("alt")
+    private String alternateBase;
+
+    @Column(name = "variant_code", nullable = false)
+    private String variantCode;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty("annotations")
     private Set<Annotation> annotations = new HashSet<>();
 
     public Variant addAnnotation(final Annotation annotation) {
