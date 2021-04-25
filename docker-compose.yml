@@ -11,6 +11,7 @@ services:
     environment:
       - PORT=8080
       - APP_URL=http://localhost:8080
+      - SAVE_BATCH_SIZE=10
       - DB_URL=jdbc:postgresql://postgres:5432/variant-annotator
       - DB_USER=postgres
       - DB_PASS=postgres
