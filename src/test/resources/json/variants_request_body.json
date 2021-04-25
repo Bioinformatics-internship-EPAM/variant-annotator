@@ -1,0 +1,16 @@
+{
+  "variants": [
+    {
+      "chrom": "chr1",
+      "pos": 123,
+      "ref": "A",
+      "alt": "AG"
+    },
+    {
+      "chrom": "chr2",
+      "pos": 234,
+      "ref": "AC",
+      "alt": "C"
+    }
+  ]
+}
