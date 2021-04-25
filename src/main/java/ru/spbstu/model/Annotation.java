@@ -1,5 +1,6 @@
 package ru.spbstu.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,8 +35,10 @@ public class Annotation {
 
     @Type(type = "jsonb")
     @Column(nullable = false, columnDefinition = "jsonb")
+    @JsonProperty("info")
     private Map<String, String> info;
 
     @Column(name = "db_name")
+    @JsonProperty("dbName")
     private String dbName;
 }

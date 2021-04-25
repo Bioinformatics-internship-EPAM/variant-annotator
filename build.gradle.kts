@@ -25,6 +25,8 @@ dependencies {
     implementation("com.vladmihalcea:hibernate-types-52:2.10.3")
     implementation("com.google.guava:guava:30.1.1-jre")
     implementation("org.apache.commons:commons-lang3:3.12.0")
+    implementation(group = "javax.json", name = "javax.json-api", version = "1.1.4")
+    implementation("org.glassfish:javax.json:1.1")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
@@ -32,6 +34,8 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers:1.15.2")
     testImplementation("org.testcontainers:postgresql:1.15.2")
     testImplementation("org.testcontainers:junit-jupiter:1.15.2")
+
+    compile("javax.json:javax.json-api:1.0")
 
     val lombok = "org.projectlombok:lombok:1.18.18"
     compileOnly(lombok)
