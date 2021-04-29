@@ -18,7 +18,7 @@ import java.util.Optional;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class AnnotationRepositoryTest {
+class AnnotationRepositoryTest {
     @Autowired
     private VariantRepository variantRepository;
     @Autowired
@@ -48,20 +48,26 @@ public class AnnotationRepositoryTest {
                 .setChromosome("a")
                 .setPosition(2L)
                 .setReferenceBase("aaa"));
-        Assertions.assertThatThrownBy(() -> annotationRepository.save(new Annotation().setVariant(variant)))
+
+        Annotation annotation = new Annotation().setVariant(variant);
+        Assertions.assertThatThrownBy(() -> annotationRepository.save(annotation))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
-    public void violateConstraintsVariantIdNotExists() {
-        Assertions.assertThatThrownBy(() -> annotationRepository.save(new Annotation().setVariant(new Variant()
-                .setId(1L)).setInfo(Map.of("info", "2"))))
+    void violateConstraintsVariantIdNotExists() {
+        Annotation annotation = new Annotation().setVariant(new Variant()
+                .setId(1L)).setInfo(Map.of("info", "2"));
+
+        Assertions.assertThatThrownBy(() -> annotationRepository.save(annotation))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
     void violateConstraintsVariantIdNotSet() {
-        Assertions.assertThatThrownBy(() -> annotationRepository.save(new Annotation().setInfo(Map.of("info", "1"))))
+        Annotation annotation = new Annotation().setInfo(Map.of("info", "1"));
+
+        Assertions.assertThatThrownBy(() -> annotationRepository.save(annotation))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 

@@ -12,7 +12,10 @@ import java.util.stream.Stream;
 public class VcfReader implements Reader<VcfRecord> {
 
     public Stream<VcfRecord> read(final InputStream inputStream) throws IOException {
-        return new VCFIteratorBuilder().open(inputStream).stream()
-                .map(VcfRecord::from);
+        try(Stream<VcfRecord> stream = new VCFIteratorBuilder().open(inputStream)
+                .stream().map(VcfRecord::from)) {
+
+            return stream;
+        }
     }
 }
