@@ -20,3 +20,4 @@ spring:
 
 app:
   appUrl: ${APP_URL}
+  saveBatchSize: ${SAVE_BATCH_SIZE}

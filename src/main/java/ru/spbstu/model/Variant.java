@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import ru.spbstu.reader.dto.VcfRecord;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,9 +17,9 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,37 +28,59 @@ import java.util.stream.Stream;
 @Table(name = "variants", uniqueConstraints = @UniqueConstraint(columnNames = {"chrom", "pos", "ref", "alt"}))
 @Entity
 public class Variant {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-  @Column(name = "chrom", nullable = false)
-  private String chromosome;
-  @Column(name = "pos", nullable = false)
-  private Long position;
-  @Column(name = "ref")
-  private String referenceBase;
-  @Column(name = "alt")
-  private String alternateBase;
-  @Column(name = "variant_code", nullable = false)
-  private String variantCode;
-  @ToString.Exclude
-  @EqualsAndHashCode.Exclude
-  @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL,
-      orphanRemoval = true)
-  private List<Annotation> annotations = new ArrayList<>();
+    @Id
+    @EqualsAndHashCode.Exclude
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  public Variant addAnnotation(Annotation annotation) {
-    this.annotations.add(annotation);
-    annotation.setVariant(this);
-    return this;
-  }
+    @Column(name = "chrom", nullable = false)
+    private String chromosome;
 
-  // TODO: remove this after migrating to PostgreSQL
-  @PreUpdate
-  @PrePersist
-  private void updateVariantCode() {
-    variantCode = Stream.of(this.chromosome, ":", position.toString(), ":", referenceBase, ">", alternateBase)
-        .filter(Objects::nonNull)
-        .collect(Collectors.joining());
-  }
+    @Column(name = "pos", nullable = false)
+    private Long position;
+
+    @Column(name = "ref")
+    private String referenceBase;
+
+    @Column(name = "alt")
+    private String alternateBase;
+
+    @Column(name = "variant_code", nullable = false)
+    private String variantCode;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Annotation> annotations = new HashSet<>();
+
+    public Variant addAnnotation(final Annotation annotation) {
+        annotation.setVariant(this);
+        annotations.add(annotation);
+        return this;
+    }
+
+    // TODO: remove this after migrating to PostgreSQL
+    @PreUpdate
+    @PrePersist
+    private void updateVariantCode() {
+        variantCode = Stream.of(this.chromosome, ":", position.toString(), ":", referenceBase, ">", alternateBase)
+                .filter(Objects::nonNull)
+                .collect(Collectors.joining());
+    }
+
+    public static Variant newInstance(final VcfRecord vcfRecord,
+                                      final String dbName) {
+        final var variant = from(vcfRecord);
+        final var annotation = new Annotation()
+                .setDbName(dbName)
+                .setInfo(vcfRecord.getInfo());
+        return variant.addAnnotation(annotation);
+    }
+
+    public static Variant from(final VcfRecord vcfRecord) {
+        return new Variant().setChromosome(vcfRecord.getChrom())
+                .setPosition((long) vcfRecord.getPos())
+                .setReferenceBase(vcfRecord.getRef())
+                .setAlternateBase(vcfRecord.getAlt());
+    }
 }
