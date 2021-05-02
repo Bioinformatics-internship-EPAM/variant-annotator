@@ -17,7 +17,6 @@ public class RegistrationController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
-        System.out.println(model.toString());
         return "signup_form";
     }
 
