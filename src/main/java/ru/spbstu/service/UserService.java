@@ -10,8 +10,6 @@ import ru.spbstu.model.Role;
 import ru.spbstu.model.User;
 import ru.spbstu.repository.UserRepository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
