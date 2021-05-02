@@ -26,12 +26,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .authorizeRequests()
                 .antMatchers("/register", "/process_register").not().fullyAuthenticated()
-                .antMatchers("/status").hasRole("ADMIN")
+                .antMatchers("/status", "/vcfs").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().permitAll()
                 .and()
-                .logout().permitAll();
+                .logout().permitAll()
+                .and()
+                .csrf().disable();
     }
 
     @Autowired
