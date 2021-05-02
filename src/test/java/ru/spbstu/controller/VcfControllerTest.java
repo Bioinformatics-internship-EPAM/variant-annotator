@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.spbstu.model.Variant;
 import ru.spbstu.reader.dto.VcfRecord;
+import ru.spbstu.service.UserService;
 import ru.spbstu.service.VariantService;
 
 import java.io.IOException;
@@ -37,7 +39,11 @@ class VcfControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @MockBean
+    private UserService userService;
+
     @Test
+    @WithMockUser(username="admin", roles={"USER","ADMIN"})
     void givenNewVcfRecords_whenParseVcfFile_thenReturnOk() throws Exception {
         final var variants = List.of(VARIANT_1, VARIANT_2);
 
@@ -48,6 +54,7 @@ class VcfControllerTest {
     }
 
     @Test
+    @WithMockUser(username="admin", roles={"USER","ADMIN"})
     void givenParseError_whenParseVcfFile_thenReturnBadRequest() throws Exception {
         given(variantService.save(any(), eq(DB_NAME))).willThrow(IOException.class);
 
