@@ -31,6 +31,8 @@ dependencies {
     implementation("com.vladmihalcea:hibernate-types-52:2.10.3")
     implementation("com.google.guava:guava:30.1.1-jre")
     implementation("org.apache.commons:commons-lang3:3.12.0")
+    implementation("io.springfox:springfox-boot-starter:3.0.0")
+    implementation("io.springfox:springfox-swagger-ui:2.9.2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
