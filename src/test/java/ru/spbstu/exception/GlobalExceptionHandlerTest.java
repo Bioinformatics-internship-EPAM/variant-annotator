@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(VcfController.class)
-public class GlobalExceptionHandlerTest {
+class GlobalExceptionHandlerTest {
   private static final String PARSE_VCF_FILE_URL = "/vcfs";
   private static final MockMultipartFile VCF_STUB_FILE = new MockMultipartFile("vcf_file", "vcf.txt", "text/plain", "stub".getBytes());
   private static final String DB_NAME = "db";
@@ -32,7 +32,7 @@ public class GlobalExceptionHandlerTest {
   private MockMvc mockMvc;
 
   @Test
-  public void checkDataIntegrityExceptionThrown() throws Exception {
+  void checkDataIntegrityExceptionThrown() throws Exception {
     given(variantService.save(any(), any())).willThrow(DataIntegrityViolationException.class);
 
     String content = mockMvc.perform(getMultipartRequest())
@@ -44,7 +44,7 @@ public class GlobalExceptionHandlerTest {
   }
 
   @Test
-  public void checkRuntimeExceptionThrown() throws Exception {
+  void checkRuntimeExceptionThrown() throws Exception {
     given(variantService.save(any(), eq(DB_NAME))).willThrow(NotFoundException.class);
 
     String content = mockMvc.perform(getMultipartRequest())
