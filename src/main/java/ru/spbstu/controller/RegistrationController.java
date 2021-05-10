@@ -1,18 +1,24 @@
 package ru.spbstu.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.spbstu.model.User;
+import ru.spbstu.repository.UserRepository;
 import ru.spbstu.service.UserService;
 
+import java.util.Optional;
+
 @Controller
+@RequiredArgsConstructor
 public class RegistrationController {
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
+
+    private final UserRepository userRepository;
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
@@ -21,13 +27,14 @@ public class RegistrationController {
     }
 
     @PostMapping("/process_register")
-    public String processRegister(@ModelAttribute("user") User user, Model model) {
-        if (!userService.saveUser(user)) {
+    public String processRegister(@ModelAttribute("user") final User user, Model model) {
+        Optional<User> userFromDB = userRepository.findByUsername(user.getUsername());
+        if (userFromDB.isPresent()) {
             model.addAttribute("usernameError", "An account for that username already exists");
             return "signup_form";
         } else {
+            userService.saveUser(user);
             return "register_success";
         }
     }
 }
-
