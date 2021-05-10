@@ -12,7 +12,6 @@ import ru.spbstu.repository.UserRepository;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -25,9 +24,9 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    public Optional<User> findUserById(Long userId) {
-        return Optional.of(userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User with such id not found")));
+    public User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User with such id not found"));
     }
 
     public List<User> allUsers() {
