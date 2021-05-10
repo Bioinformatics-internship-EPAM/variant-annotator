@@ -49,8 +49,8 @@ class UserRepositoryTest {
                 .setUsername("test")
                 .setPassword("password"));
 
-        User userInformation = userRepository.findByUsername("test");
-        Assertions.assertThat(userInformation.getPassword())
+        Optional<User> userInformation = userRepository.findByUsername("test");
+        Assertions.assertThat(userInformation.get().getPassword())
                 .isEqualTo(user.getPassword());
     }
 }

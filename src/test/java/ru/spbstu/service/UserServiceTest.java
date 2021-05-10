@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.spbstu.model.User;
 import ru.spbstu.repository.UserRepository;
 
+import java.util.Optional;
+
 import static org.junit.Assert.assertThrows;
 import static org.mockito.BDDMockito.given;
 
@@ -33,10 +35,11 @@ class UserServiceTest {
 
     @Test
     void loadUserByUsername() {
-        given(userRepository.findByUsername("test")).willReturn(new User()
-                    .setUsername("test")
-                    .setPassword("password"));
-        UserDetails userInfo =  userService.loadUserByUsername("test");
+        Optional<User> userOptional = Optional.of(new User()
+                .setUsername("test")
+                .setPassword("password"));
+        given(userRepository.findByUsername("test")).willReturn(userOptional);
+        UserDetails userInfo = userService.loadUserByUsername("test");
         Assertions.assertThat(userInfo.getUsername())
                 .isEqualTo("test");
         Assertions.assertThat(userInfo.getPassword())
@@ -45,7 +48,7 @@ class UserServiceTest {
 
     @Test
     void loadUserByNotExitedUsername() {
-        given(userRepository.findByUsername("test")).willReturn(null);
+        given(userRepository.findByUsername("test")).willReturn(Optional.empty());
         Exception exception = assertThrows(UsernameNotFoundException.class, () -> {
             userService.loadUserByUsername("test");
         });
