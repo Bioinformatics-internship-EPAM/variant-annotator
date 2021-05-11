@@ -54,15 +54,7 @@ class UserServiceTest {
         });
         String expectedMessage = "User not found";
         String actualMessage = exception.getMessage();
-        Assertions.assertThat(actualMessage.equals(expectedMessage));
-    }
-
-    @Test
-    void findUserById() {
-    }
-
-    @Test
-    void allUsers() {
+        Assertions.assertThat(actualMessage).isEqualTo(expectedMessage);
     }
 
     @Test
@@ -75,10 +67,6 @@ class UserServiceTest {
         given(userRepository.findByUsername(username)).willReturn(null);
         given(userRepository.save(user)).willReturn(user);
         given(bCryptPasswordEncoder.encode(password)).willReturn("$2a$10$a7OsO0RhFaKziKginvn1.ON95coPosmBE0InUuZB1OLmDzps6t6lu");
-        Assertions.assertThat(userService.saveUser(user)).isEqualTo(true);
-    }
-
-    @Test
-    void deleteUser() {
+        Assertions.assertThat(userService.saveUser(user)).isTrue();
     }
 }
