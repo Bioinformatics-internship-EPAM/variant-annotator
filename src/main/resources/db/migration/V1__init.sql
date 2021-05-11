@@ -21,13 +21,13 @@ create table annotations
 
 create table users (
   id bigserial primary key,
-  username varchar not null,
-  password varchar not null
+  username varchar(100) not null,
+  password varchar(100) not null
 );
 
 create table roles (
   id bigserial primary key,
-  name varchar not null
+  name varchar(100) not null
 );
 
 create table users_roles (
