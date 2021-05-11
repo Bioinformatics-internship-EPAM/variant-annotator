@@ -3,3 +3,5 @@
 *.iml
 **/out
 /.gradle
+tests/.pytest_cache
+tests/**/__pycache__
