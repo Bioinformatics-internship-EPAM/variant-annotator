@@ -35,6 +35,8 @@ dependencies {
     implementation ("org.springframework.security:spring-security-test")
     implementation ("javax.validation:validation-api")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("io.springfox:springfox-boot-starter:3.0.0")
+    implementation("io.springfox:springfox-swagger-ui:2.9.2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
