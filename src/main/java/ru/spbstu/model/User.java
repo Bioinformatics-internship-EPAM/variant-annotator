@@ -2,15 +2,18 @@ package ru.spbstu.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.spbstu.dto.UserDto;
 
 import javax.persistence.*;
 import java.util.*;
 
 @Data
+@NoArgsConstructor
 @Accessors(chain = true)
 @Entity
 @Table(name = "users")
@@ -31,6 +34,11 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
     private Set<Role> roles = new HashSet<>();
+
+    public User(UserDto userDto) {
+        this.setUsername(userDto.getUsername());
+        this.setPassword(userDto.getPassword());
+    }
 
     @Override
     public String getUsername() {
