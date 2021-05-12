@@ -20,12 +20,9 @@ addons:
     token:
       secure: "YSkrj5q/N7SxFlua6T+LhI+SAjmX2H4ELxT7hKOs7cZ+cbKKWt25V0JF1RwQF9Y2Y9/KctHU2sh5c4LleNU8IjGlKB8fIonHm++r7IC2toXr2CTpfWER7aOwoJpl2Vy1aV6SMS/y583hAk/ugAlbiIzC/zNnfB01sHfdycRWOQJz/uzxFZ0pPLY+TgAbSeuE7UL6LRfC1lbxczhBHtnzhrsl9F2vrY2lDZMWatPuyT4nFo57XRCTn47FmZBtwyUbmxHQ0dEMPLyaqIuE1Tqe5/sfBNYasV5jXcl1Vp+2eJtEgAxWv2efKOshnTgALsvcJP1cYo4VyShqOyUnFAsErt1jmO95ef/ATVz6B7X13anrwt5EwvY7W17dVQJ3/cEkAFtZU5s7RmCmb08l73kQmrLCoTN1FT7Bc8r8s5v+FVyIjuhQCqLYPjWJHaPKKOIww67UpB3vWrsPAl/6kHG/pUiF7g/MhOjprJr/l+cAV9Fbtdali0K+ZVnSx6yjsusxiolNiyaxPznNBiygKfg+aNiMJo3Dpl8pajHbdh+J5PSJ57+aGSmeGWvVcGNLyHKLrlE+E7Yx48A9zR63g3RjciumtHutKTqGXtAhoI+qjvwaOpholn47NxCP+AGsgXw2htPaJ76csI3ZkvbwaoO2s1AEcS616PxwKJY4+E1A6fs="
 
-
 jobs:
   include:
-    - stage: "sonarqube"
-      script: ./gradlew sonarqube
-    - stage: "build"
-      script: ./gradlew bootJar
-    - stage: "unit tests"
-      script: ./gradlew test
+    - stage: "Unit Tests & SonarCloud Analysis"
+      script:
+        - ./gradlew jacocoTestReport
+        - ./gradlew sonarqube
