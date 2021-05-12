@@ -33,6 +33,10 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("io.springfox:springfox-boot-starter:3.0.0")
     implementation("io.springfox:springfox-swagger-ui:2.9.2")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation ("org.springframework.security:spring-security-test")
+    implementation ("javax.validation:validation-api")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
@@ -49,7 +53,7 @@ dependencies {
 }
 
 jacoco {
-    toolVersion = "0.8.7-SNAPSHOT"
+    toolVersion = "0.8.7"
 }
 
 tasks {

@@ -7,9 +7,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import ru.spbstu.controller.VcfController;
+import ru.spbstu.service.UserService;
 import ru.spbstu.service.VariantService;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +33,11 @@ class GlobalExceptionHandlerTest {
   @Autowired
   private MockMvc mockMvc;
 
+  @MockBean
+  private UserService userService;
+
   @Test
+  @WithMockUser(username="admin", roles={"USER","ADMIN"})
   void checkDataIntegrityExceptionThrown() throws Exception {
     given(variantService.save(any(), any())).willThrow(DataIntegrityViolationException.class);
 
@@ -44,6 +50,7 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
+  @WithMockUser(username="admin", roles={"USER","ADMIN"})
   void checkRuntimeExceptionThrown() throws Exception {
     given(variantService.save(any(), eq(DB_NAME))).willThrow(NotFoundException.class);
 
