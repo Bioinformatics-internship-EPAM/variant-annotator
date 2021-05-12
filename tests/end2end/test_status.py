@@ -1,7 +1,7 @@
 #!/usr/nin/python
 import requests
 
-HOST = "http://localhost:8080/api"
+from utils import HOST
 
 
 def test_status():
