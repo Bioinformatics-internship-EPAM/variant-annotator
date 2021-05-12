@@ -14,10 +14,19 @@ import ru.spbstu.model.Variant;
 import ru.spbstu.reader.dto.VcfRecord;
 import ru.spbstu.service.VariantService;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonArrayBuilder;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.*;
-import javax.json.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
