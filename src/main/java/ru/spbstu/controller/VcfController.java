@@ -9,15 +9,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import ru.spbstu.dto.AnnotatedVariantList;
-import ru.spbstu.dto.VariantList;
-import ru.spbstu.model.Variant;
+import ru.spbstu.dto.VariantListDto;
 import ru.spbstu.service.VariantService;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,19 +33,7 @@ public class VcfController {
 
     @PostMapping("/getAnnotatedVariants")
     @ResponseBody
-    public AnnotatedVariantList getAnnotatedVariants(@RequestBody VariantList requestedVariantList) {
-        List<Variant> requestedVariants = requestedVariantList.getVariants();
-        List<Variant> annotatedVariants = new ArrayList<>();
-
-        for (Variant var: requestedVariants) {
-            Optional<Variant> variant = variantService.find(var.getChromosome(), var.getPosition(),
-                    var.getReferenceBase(), var.getAlternateBase());
-            if (variant.isPresent() && variant.get().getAnnotations() != null) {
-                annotatedVariants.add(variant.get());
-            }
-        }
-        AnnotatedVariantList annotatedVariantList = new AnnotatedVariantList();
-        annotatedVariantList.setVariants(annotatedVariants);
-        return annotatedVariantList;
+    public VariantListDto getAnnotatedVariants(@RequestBody VariantListDto requestedVariantListDto) {
+        return variantService.getAnnotatedVariants(requestedVariantListDto);
     }
 }
