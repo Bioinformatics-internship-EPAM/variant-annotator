@@ -6,7 +6,7 @@ import pytest
 
 from utils import TEST_FOLDER, WAIT_PERIOD, run_command
 
-out, err = run_command("cd {} && cd .. && docker-compose up -d".format(TEST_FOLDER))
+out, err = run_command("cd {} && cd .. && docker-compose up --build -d".format(TEST_FOLDER))
 if err:
     print(err)
 print("Started dockers")

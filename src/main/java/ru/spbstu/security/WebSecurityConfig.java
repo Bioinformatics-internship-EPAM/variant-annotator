@@ -34,7 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout().permitAll()
                 .and()
-                .csrf().ignoringAntMatchers("/vcfs");
+                .csrf().disable();
     }
 
     @Autowired
