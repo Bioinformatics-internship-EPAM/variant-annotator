@@ -94,8 +94,8 @@ class VariantServiceTest {
         VariantListDto annotatedVariantListDto = variantService.getAnnotatedVariants(requestedVariantListDto);
 
         List<Variant> variants = annotatedVariantListDto.getVariants();
-        Assertions.assertEquals(variants.size(), 2);
-        Assertions.assertEquals(variants.get(0).getAnnotations().size(), 1);
-        Assertions.assertEquals(variants.get(1).getAnnotations().size(), 0);
+        Assertions.assertEquals(2, variants.size());
+        Assertions.assertEquals(1, variants.get(0).getAnnotations().size());
+        Assertions.assertEquals(0, variants.get(1).getAnnotations().size());
     }
 }

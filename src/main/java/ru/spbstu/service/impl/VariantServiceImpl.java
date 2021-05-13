@@ -55,16 +55,11 @@ public class VariantServiceImpl implements VariantService {
 
     @Override
     public VariantListDto getAnnotatedVariants(VariantListDto requestedVariantListDto) {
-        List<Variant> requestedVariants = requestedVariantListDto.getVariants();
-        List<Variant> annotatedVariants = new ArrayList<>();
-
-        for (Variant var: requestedVariants) {
-            Optional<Variant> variant = find(var.getChromosome(), var.getPosition(),
-                    var.getReferenceBase(), var.getAlternateBase());
-            if (variant.isPresent() && variant.get().getAnnotations() != null) {
-                annotatedVariants.add(variant.get());
-            }
-        }
+        List<Variant> annotatedVariants = requestedVariantListDto.getVariants().stream()
+                .map(var -> find(var.getChromosome(), var.getPosition(), var.getReferenceBase(), var.getAlternateBase()))
+                .filter(optionalVar -> optionalVar.isPresent() && optionalVar.get().getAnnotations() != null)
+                .map(Optional::get)
+                .collect(Collectors.toList());
         return new VariantListDto(annotatedVariants);
     }
 }
