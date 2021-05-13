@@ -45,6 +45,8 @@ dependencies {
     testImplementation("org.testcontainers:postgresql:1.15.2")
     testImplementation("org.testcontainers:junit-jupiter:1.15.2")
 
+    compile("javax.json:javax.json-api:1.0")
+
     val lombok = "org.projectlombok:lombok:1.18.18"
     compileOnly(lombok)
     annotationProcessor(lombok)

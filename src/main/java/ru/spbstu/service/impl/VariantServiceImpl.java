@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.spbstu.dto.VariantListDto;
 import ru.spbstu.model.Variant;
 import ru.spbstu.reader.Reader;
 import ru.spbstu.reader.dto.VcfRecord;
@@ -13,6 +14,9 @@ import ru.spbstu.service.VariantService;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,5 +46,20 @@ public class VariantServiceImpl implements VariantService {
         final var variants = vcfReader.read(inputStream)
                 .map(vcfRecord -> Variant.newInstance(vcfRecord, dbName));
         Iterators.partition(variants.iterator(), saveBatchSize).forEachRemaining(variantRepository::saveAll);
+    }
+
+    @Override
+    public Optional<Variant> find(String chromosome, Long position, String referenceBase, String alternateBase) {
+        return variantRepository.findVariant(chromosome, position, referenceBase, alternateBase);
+    }
+
+    @Override
+    public VariantListDto getAnnotatedVariants(VariantListDto requestedVariantListDto) {
+        List<Variant> annotatedVariants = requestedVariantListDto.getVariants().stream()
+                .map(var -> find(var.getChromosome(), var.getPosition(), var.getReferenceBase(), var.getAlternateBase()))
+                .filter(optionalVar -> optionalVar.isPresent() && optionalVar.get().getAnnotations() != null)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        return new VariantListDto(annotatedVariants);
     }
 }

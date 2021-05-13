@@ -12,7 +12,7 @@ import static java.util.stream.Collectors.toMap;
 @AllArgsConstructor
 public class VcfRecord {
     private final String chrom;
-    private final int pos;
+    private final long pos;
     private final String id;
     private final String ref;
     private final String alt;
