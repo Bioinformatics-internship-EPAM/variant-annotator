@@ -4,7 +4,9 @@ import time
 
 import pytest
 
-from utils import TEST_FOLDER, WAIT_PERIOD, run_command
+from utils import TEST_FOLDER, run_command
+
+WAIT_PERIOD = 30
 
 out, err = run_command("cd {} && cd .. && docker-compose up --build -d".format(TEST_FOLDER))
 if err:

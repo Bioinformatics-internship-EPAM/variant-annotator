@@ -1,0 +1,6 @@
+schema: http
+host: localhost
+port: 8080
+path: /api
+username: admin
+password: 123

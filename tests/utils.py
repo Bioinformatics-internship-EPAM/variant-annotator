@@ -2,11 +2,21 @@ import os
 import subprocess
 
 import requests
+import yaml
 
-HOST = "http://localhost:8080/api"
 TEST_FOLDER = os.path.dirname(os.path.realpath(__file__))
 RESOURCE_FOLDER = "{}/{}".format(TEST_FOLDER, "resources")
-WAIT_PERIOD = 30
+
+
+def read_yaml(filename):
+    with open(filename, "r") as file:
+        return yaml.load(file, yaml.FullLoader)
+
+
+__CONFIG = read_yaml("{}/config.yaml".format(RESOURCE_FOLDER))
+BASE_URI = "{}://{}:{}{}".format(__CONFIG["schema"], __CONFIG["host"], __CONFIG["port"], __CONFIG["path"])
+USERNAME = __CONFIG["username"]
+PASSWORD = __CONFIG["password"]
 
 
 def get_current_folder(file):
@@ -14,14 +24,14 @@ def get_current_folder(file):
 
 
 def run_command(command, stdout=subprocess.PIPE):
-    p = subprocess.Popen(command, stdout=stdout, stderr=subprocess.PIPE, shell=True)
-    return p.communicate()
+    process = subprocess.Popen(command, stdout=stdout, stderr=subprocess.PIPE, shell=True)
+    return process.communicate()
 
 
 def get_cookies():
     data = {
-        'username': 'admin',  # TODO: get fro config
-        'password': '123'
+        'username': USERNAME,
+        'password': PASSWORD
     }
 
     response = requests.post("http://localhost:8080/api/login", data=data, allow_redirects=False)
