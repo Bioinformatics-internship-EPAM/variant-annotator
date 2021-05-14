@@ -16,7 +16,7 @@ import java.util.Map;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class VariantRepositoryTest {
+class VariantRepositoryTest {
     @Autowired
     private VariantRepository variantRepository;
     @Autowired
@@ -46,11 +46,13 @@ public class VariantRepositoryTest {
                 .setPosition(3L)
                 .setReferenceBase("aaa")
                 .setAlternateBase("aaab"));
-        Assertions.assertThatThrownBy(() -> variantRepository.save(new Variant()
+
+        Variant variant = new Variant()
                 .setChromosome("a")
                 .setPosition(3L)
                 .setReferenceBase("aaa")
-                .setAlternateBase("aaab")))
+                .setAlternateBase("aaab");
+        Assertions.assertThatThrownBy(() -> variantRepository.save(variant))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
@@ -110,8 +112,10 @@ public class VariantRepositoryTest {
     void violateVariantCodeUniqueConstraint() {
         variantRepository.save(new Variant()
                 .setChromosome("a").setPosition(2L).setReferenceBase("t").setAlternateBase(""));
-        Assertions.assertThatThrownBy(() -> variantRepository.save(new Variant()
-                .setChromosome("a").setPosition(2L).setReferenceBase("t").setAlternateBase("")))
+
+        Variant variant = new Variant()
+                .setChromosome("a").setPosition(2L).setReferenceBase("t").setAlternateBase("");
+        Assertions.assertThatThrownBy(() -> variantRepository.save(variant))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 }
