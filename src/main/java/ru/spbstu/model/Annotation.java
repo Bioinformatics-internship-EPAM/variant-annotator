@@ -1,5 +1,6 @@
 package ru.spbstu.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
@@ -27,10 +28,12 @@ public class Annotation {
     @Id
     @EqualsAndHashCode.Exclude
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "variant_id", nullable = false)
+    @JsonIgnore
     private Variant variant;
 
     @Type(type = "jsonb")

@@ -67,6 +67,7 @@ class VcfControllerTest {
     }
 
     @Test
+    @WithMockUser(username="admin", roles={"USER","ADMIN"})
     void givenAnnotatedVariants_whenGettingVariants_thenReturnOkAndServiceInvoked() throws Exception {
         String content = generateJsonVariantList(Arrays.asList(VARIANT_1, VARIANT_2, VARIANT_3));
 
