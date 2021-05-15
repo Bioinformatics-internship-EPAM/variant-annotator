@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.util.stream.Stream;
 
 @Component
+@SuppressWarnings("squid:S2095")
 public class VcfReader implements Reader<VcfRecord> {
 
     public Stream<VcfRecord> read(final InputStream inputStream) throws IOException {
