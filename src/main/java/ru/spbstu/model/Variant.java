@@ -1,5 +1,6 @@
 package ru.spbstu.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,6 +33,7 @@ public class Variant {
     @Id
     @EqualsAndHashCode.Exclude
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @Column(name = "chrom", nullable = false)
@@ -51,6 +53,7 @@ public class Variant {
     private String alternateBase;
 
     @Column(name = "variant_code", nullable = false)
+    @JsonIgnore
     private String variantCode;
 
     @ToString.Exclude

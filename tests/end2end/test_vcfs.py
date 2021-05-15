@@ -1,10 +1,16 @@
-import allel
 import pytest
 import requests
+import vcf
 
 from utils import RESOURCE_FOLDER, BASE_URI, run_command, get_cookies
 
 DB_NAME = "db_test_variant-annotator"
+
+
+def _read_vcf(filepath):
+    # type: (str) -> list
+    reader = vcf.Reader(open(filepath, "r"))
+    return [record for record in reader]
 
 
 def _request_getAnnotatedVariants(data):
@@ -40,15 +46,41 @@ def test_post_getAnnotatedVariants_empty():
 
 
 def test_post_getAnnotatedVariants():
-    vcf_data = allel.read_vcf("{}/test_vcf_file.vcf".format(RESOURCE_FOLDER))
+    vcf_data = _read_vcf("{}/test_vcf_file.vcf".format(RESOURCE_FOLDER))
     data = {
         "variants": [{
-            "pos": int(vcf_data["variants/POS"][0]),
-            "chrom": vcf_data["variants/CHROM"][0],
-            "ref": vcf_data["variants/REF"][0],
-            "alt": vcf_data["variants/ALT"][0][0]
+            "pos": int(vcf_data[0].POS),
+            "chrom": str(vcf_data[0].CHROM),
+            "ref": str(vcf_data[0].REF),
+            "alt": str(vcf_data[0].ALT[0])
         }]
+    }
+    info = {}
+    for key, value in vcf_data[0].INFO.items():
+        info[key] = float(value[0])
+
+    expected_data = {
+        "variants": [
+            {
+                "pos": int(vcf_data[0].POS),
+                "chrom": str(vcf_data[0].CHROM),
+                "ref": str(vcf_data[0].REF),
+                "alt": str(vcf_data[0].ALT[0]),
+                "annotations": [
+                    {
+                        "info": info,
+                        "dbName": DB_NAME
+                    }]
+            }
+        ]
     }
 
     response = _request_getAnnotatedVariants(data)
     assert response.status_code // 100 == 2, (response.status_code, response.json())
+    response_body = response.json()
+    assert len(response_body["variants"]) == 1
+    r_info = {}
+    for key, value in response_body['variants'][0]['annotations'][0]['info'].items():
+        r_info[key] = float(value)
+    response_body['variants'][0]['annotations'][0]['info'] = r_info
+    assert response_body == expected_data
